@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+require 'thor'
+require 'jreport'
+
+module JreportCommand
+  
+  class Generator < Thor
+    
+    desc 'model','model for activerecord'
+    def model(name)
+      puts "Generate model #{name}"
+    end
+    
+    desc 'collector','generate collector'
+    def collector(name)
+      puts "generate collector #{name}"
+    end
+    
+    desc 'controller','generate controller'
+    def controller(name)
+      puts "generate controller #{name}"
+    end
+    
+    desc 'view','generate view'
+    def view(name)
+      puts "generate view #{name}"
+    end
+    
+    desc 'scaffold NAME','generate NAME scaffold tools'
+    def scaffold(name)
+      puts "generate scaffold #{name}"
+      self.collector(name)
+      self.controller(name)
+      self.view(name)
+    end
+    
+  end
+
+  
+  class JreportMainCmd < Thor
+    desc 'new PROJECT','create new report project'
+    def new(project)
+      pwd=`pwd`.chomp<<"/#{project}"
+      
+    end
+    
+    desc 'make REPORT','generate and send REPORT'
+    def make(report)
+      assembler=Jreport::Assembler.new(report)
+      assembler.make_report
+    end
+    
+    desc "generate","generate needed components"
+    subcommand "generate", Generator
+  end
+  
+end
+
+JreportCommand::JreportMainCmd.start(ARGV)
