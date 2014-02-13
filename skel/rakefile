@@ -1,4 +1,4 @@
-require 'db/connection'
+require './db/connection'
 Dir.glob('tasks/*.rake').each { |r| import r }
 
 desc "default task, do nothing"
