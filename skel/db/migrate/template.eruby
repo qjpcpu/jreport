@@ -1,0 +1,10 @@
+class Create<%= table.split('_').map{|x| x.capitalize}.join.pluralize %> < ActiveRecord::Migration    
+  def change    
+    create_table :<%= table.downcase.pluralize %> do |t|    
+        <% fields.each do |f| %>
+          <% fname,ftype=f.downcase.split(':') %>
+          t.<%=ftype%>  :<%=fname%>
+        <% end %>
+    end   
+  end    
+end  

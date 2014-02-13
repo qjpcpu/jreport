@@ -1,1 +1,1 @@
-<h1><%=report_name%></h1>
+<h1><%=report_name%>_report</h1>

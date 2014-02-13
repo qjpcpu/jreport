@@ -1,0 +1,5 @@
+class <%= table.split('_').map{|x| x.capitalize}.join.singularize %> < ActiveRecord::Base
+	<% refs.each do |model| %>
+		belongs_to :<%=model%>
+	<% end %>
+end

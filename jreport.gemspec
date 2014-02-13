@@ -20,10 +20,12 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "activesupport"
   
   spec.add_runtime_dependency "thor"
   spec.add_runtime_dependency 'mail'
   spec.add_runtime_dependency 'inline-style'
   spec.add_runtime_dependency 'erubis'
   spec.add_runtime_dependency 'sqlite3'
+  spec.add_runtime_dependency 'activerecord'
 end

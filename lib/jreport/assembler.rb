@@ -23,7 +23,7 @@ module Jreport
         begin
           ctrl=ctrl_klas.new
           class << ctrl
-            attr_accessor :data,:options
+            attr_accessor :data,:options,:save_to
           end
           ctrl.data,ctrl.options=fetch_data,{}
           ctrl.send m
@@ -31,10 +31,13 @@ module Jreport
           html=render_html(dir,m.to_s,:data=>ctrl.data)
           puts "Below is content body\n#{'-'*20}"
           puts html
+          `echo "#{html}" > "#{ctrl.save_to}"` if ctrl.save_to
           ops=ctrl.options.merge('body'=>html,'content-type'=>"text/html;charset=UTF-8")
+          puts "Sending email for #{m}..."
           send_mail ops
         rescue=>e
           puts e
+          puts e.backtrace
         end
       end
       
@@ -52,17 +55,26 @@ module Jreport
     end
     
     def send_mail(options)
-      m=Mail.new do
-        from    options['from']
-        to      options['to']
-        subject options['subject']
-        html_part do
-          body options['body']
-          content_type options['content-type']
+      begin
+        m=Mail.new do
+          from    options['from']
+          to      options['to']
+          subject options['subject']
+          html_part do
+            body options['body']
+            content_type options['content-type']
+          end
+          if options['files']
+            options['files'].split(';').each do |f|
+              add_file f
+            end
+          end
         end
-        add_file options['file']
+        m.deliver
+      rescue=>e
+        puts "Send mail faild!"
+        puts e.backtrace
       end
-      m.deliver
     end
     
   end

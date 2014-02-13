@@ -2,14 +2,24 @@
 require 'thor'
 require 'jreport'
 require 'erubis'
+require 'active_support/inflector'
 
 module JreportCommand
   
   class Generator < Thor
     
     desc 'model','model for activerecord'
-    def model(name)
-      puts "Generate model #{name}"
+    def model(table,*fields)
+      dir=File.expand_path('../../skel',__FILE__)
+      code=Erubis::Eruby.new(File.read("#{dir}/db/migrate/template.eruby")).result(:table=>table,:fields=>fields)
+      num="%03d" % ((Dir['./db/migrate/*.rb'].map{|f| File.basename(f)[0..2].to_i } << -1).max+1)
+      mig_name="#{num}_create_#{table.downcase.pluralize}.rb"
+      `echo "#{code}" > ./db/migrate/"#{mig_name}" `
+      
+      refs=fields.select{|f| f.split(':')[1]=='references'}.map{|f| f.split(':')[0].downcase }
+      code=Erubis::Eruby.new(File.read("#{dir}/models/template.eruby")).result(:table=>table,:refs=>refs)
+      mod_name=table.downcase.singularize+'.rb'
+      `echo "#{code}" > ./models/#{mod_name}`
     end
     
     desc 'collector','generate collector'
@@ -43,7 +53,6 @@ module JreportCommand
     
     desc 'scaffold NAME','generate NAME scaffold tools'
     def scaffold(name,*args)
-      puts "generate scaffold #{name}"
       self.collector(name)
       self.controller(name,*args)
       self.view(name,*args)
@@ -57,8 +66,7 @@ module JreportCommand
     def new(project)
       pwd=`pwd`.chomp<<"/#{project}"
       skel=File.expand_path('../../skel',__FILE__)
-      `cp -r "#{skel}" "./#{project}"`
-      `rm -fr "./#{project}/{collectors,controllers,views}/*"`
+      `cp -r "#{skel}" "./#{project}" && rm -fr ./"#{project}"/{collectors,controllers,views,models,db/migrate}/* `
     end
     
     desc 'make REPORT','generate and send REPORT'
