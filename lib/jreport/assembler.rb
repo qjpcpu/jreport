@@ -1,7 +1,12 @@
+require 'erubis'
+require 'inline-style'
+require 'mail'
+
 module Jreport
   class Assembler
     def initialize(report_name)
       @root=`pwd`.chomp
+      @_report=report_name
       @report=report_name.split('_').map{|x| x.capitalize}.join
     end
     def fetch_data
@@ -17,8 +22,9 @@ module Jreport
       mtds.each do |m|
         begin
           ctrl=ctrl_klas.new
+          fd=fetch_data
           ctrl.instance_eval do 
-            @data=fetch_data
+            @data=fd
             def data
               @data
             end
@@ -28,13 +34,43 @@ module Jreport
             end
           end
           ctrl.send m
-        # then use strl.data to merge data to template
-        # then send out email
+          dir="#{@root}/views/#{@_report}"
+          html=render_html(dir,m.to_s,:data=>ctrl.data)
+          puts "Below is content body\n#{'-'*20}"
+          puts html
+          ops=ctrl.options.merge('body'=>html,'content-type'=>"text/html;charset=UTF-8")
+          send_mail ops
         rescue=>e
           puts e
         end
       end
       
     end
+    
+    def render_html(dir,report_name,bindings)
+      base="#{dir}/#{report_name}"
+      html=Erubis::Eruby.new(File.read("#{base}.eruby")).result(bindings)
+  		if File.exist? "#{base}.css"
+  			css=File.read "#{base}.css"
+  			html<<%Q{<style type="text/css" media="screen">#{css}</style>}
+  			html=InlineStyle.process(html)
+  		end
+  		html
+    end
+    
+    def send_mail(options)
+      m=Mail.new do
+        from    options['from']
+        to      options['to']
+        subject options['subject']
+        html_part do
+          body options['body']
+          content_type options['content-type']
+        end
+        add_file options['file']
+      end
+      m.deliver
+    end
+    
   end
 end

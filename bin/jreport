@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'thor'
 require 'jreport'
-
+puts __FILE__
 module JreportCommand
   
   class Generator < Thor
@@ -13,25 +13,48 @@ module JreportCommand
     
     desc 'collector','generate collector'
     def collector(name)
-      puts "generate collector #{name}"
+      code=%Q{class #{name.split('_').map{|x| x.capitalize }.join}Collector
+        def fetch_data
+           #TODO: add code here
+        end\nend}
+      file="./collectors/#{name}_collector.rb"
+      `echo "#{code}" > "#{file}"`
     end
     
     desc 'controller','generate controller'
-    def controller(name)
-      puts "generate controller #{name}"
+    def controller(name,*methods)
+      methods<<'example' if methods.empty?
+      mtd_code="# the method looks like xxx_report would be used to generate report"
+      methods.each do |m|
+        mtd_code<<%Q{
+        def #{m}_report
+           # TODO: add code here
+        end
+      }
+      end
+      code=%Q{class #{name.split('_').map{|x| x.capitalize }.join}Controller
+        #{mtd_code}\nend}
+      file="./controllers/#{name}_controller.rb"
+      `echo "#{code}" > "#{file}"`
     end
     
     desc 'view','generate view'
-    def view(name)
-      puts "generate view #{name}"
+    def view(name,*views)
+      `mkdir "./views/#{name}"` unless File.exists?("./views/#{name}")
+      views<<'example' if views.empty?
+      views.map{|x| x+'_report'}.each do |fname|
+        content=%Q{<h1>#{fname}</h1>}
+        `echo "#{content}" > "./views/#{name}/#{fname}.eruby"`
+        `touch "./views/#{name}/#{fname}.css"`
+      end
     end
     
     desc 'scaffold NAME','generate NAME scaffold tools'
-    def scaffold(name)
+    def scaffold(name,*args)
       puts "generate scaffold #{name}"
       self.collector(name)
-      self.controller(name)
-      self.view(name)
+      self.controller(name,*args)
+      self.view(name,*args)
     end
     
   end
@@ -46,6 +69,7 @@ module JreportCommand
     
     desc 'make REPORT','generate and send REPORT'
     def make(report)
+      require './boot'
       assembler=Jreport::Assembler.new(report)
       assembler.make_report
     end
