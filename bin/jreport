@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'thor'
 require 'jreport'
+require 'erubis'
 
 module JreportCommand
   
@@ -13,10 +14,8 @@ module JreportCommand
     
     desc 'collector','generate collector'
     def collector(name)
-      code=%Q{class #{name.split('_').map{|x| x.capitalize }.join}Collector
-        def fetch_data
-           #TODO: add code here
-        end\nend}
+      dir=File.expand_path('../../skel/collectors',__FILE__)
+      code=Erubis::Eruby.new(File.read("#{dir}/template.eruby")).result(:collector=>name)
       file="./collectors/#{name}_collector.rb"
       `echo "#{code}" > "#{file}"`
     end
@@ -24,16 +23,8 @@ module JreportCommand
     desc 'controller','generate controller'
     def controller(name,*methods)
       methods<<'example' if methods.empty?
-      mtd_code="# the method looks like xxx_report would be used to generate report"
-      methods.each do |m|
-        mtd_code<<%Q{
-        def #{m}_report
-           # TODO: add code here
-        end
-      }
-      end
-      code=%Q{class #{name.split('_').map{|x| x.capitalize }.join}Controller
-        #{mtd_code}\nend}
+      dir=File.expand_path('../../skel/controllers',__FILE__)
+      code=Erubis::Eruby.new(File.read("#{dir}/template.eruby")).result(:controller=>name,:methods=>methods)
       file="./controllers/#{name}_controller.rb"
       `echo "#{code}" > "#{file}"`
     end
@@ -43,7 +34,8 @@ module JreportCommand
       `mkdir "./views/#{name}"` unless File.exists?("./views/#{name}")
       views<<'example' if views.empty?
       views.map{|x| x+'_report'}.each do |fname|
-        content=%Q{<h1>#{fname}</h1>}
+        dir=File.expand_path('../../skel/views',__FILE__)
+        content=Erubis::Eruby.new(File.read("#{dir}/template.eruby")).result(:report_name=>name)
         `echo "#{content}" > "./views/#{name}/#{fname}.eruby"`
         `touch "./views/#{name}/#{fname}.css"`
       end
@@ -66,6 +58,7 @@ module JreportCommand
       pwd=`pwd`.chomp<<"/#{project}"
       skel=File.expand_path('../../skel',__FILE__)
       `cp -r "#{skel}" "./#{project}"`
+      `rm -fr "./#{project}/{collectors,controllers,views}/*"`
     end
     
     desc 'make REPORT','generate and send REPORT'

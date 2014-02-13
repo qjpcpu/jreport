@@ -1,0 +1,5 @@
+class <%=collector.split('_').map{|x| x.capitalize }.join %>Collector
+	def fetch_data
+		#TODO: add code here
+	end
+end
