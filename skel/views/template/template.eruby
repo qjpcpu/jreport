@@ -1,5 +1,0 @@
-this is template
-<%= data %>
-------
-<%= GoController.instance_methods(false) %>
-end

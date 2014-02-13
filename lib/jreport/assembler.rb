@@ -22,17 +22,10 @@ module Jreport
       mtds.each do |m|
         begin
           ctrl=ctrl_klas.new
-          fd=fetch_data
-          ctrl.instance_eval do 
-            @data=fd
-            def data
-              @data
-            end
-            @options={}
-            def options
-              @options
-            end
+          class << ctrl
+            attr_accessor :data,:options
           end
+          ctrl.data,ctrl.options=fetch_data,{}
           ctrl.send m
           dir="#{@root}/views/#{@_report}"
           html=render_html(dir,m.to_s,:data=>ctrl.data)

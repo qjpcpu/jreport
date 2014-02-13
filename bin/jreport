@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'thor'
 require 'jreport'
-puts __FILE__
+
 module JreportCommand
   
   class Generator < Thor
@@ -64,7 +64,8 @@ module JreportCommand
     desc 'new PROJECT','create new report project'
     def new(project)
       pwd=`pwd`.chomp<<"/#{project}"
-      
+      skel=File.expand_path('../../skel',__FILE__)
+      `cp -r "#{skel}" "./#{project}"`
     end
     
     desc 'make REPORT','generate and send REPORT'
