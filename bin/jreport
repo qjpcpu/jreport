@@ -67,6 +67,7 @@ module JreportCommand
       pwd=`pwd`.chomp<<"/#{project}"
       skel=File.expand_path('../../skel',__FILE__)
       `cp -r "#{skel}" "./#{project}" && rm -fr ./"#{project}"/{collectors,controllers,views,models,db/migrate}/* `
+      puts "#{project} created!"
     end
     
     desc 'make REPORT','generate and send REPORT'

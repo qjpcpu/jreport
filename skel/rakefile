@@ -1,4 +1,7 @@
+require 'bundler'
+Bundler.require(:deafult)
 require './db/connection'
+
 Dir.glob('tasks/*.rake').each { |r| import r }
 
 desc "default task, do nothing"
@@ -10,6 +13,7 @@ namespace 'db' do
 	desc "migrate database tables"
 	task :migrate do  
 	  ActiveRecord::Migrator.migrate('db/migrate', ENV["VERSION"] ? ENV["VERSION"].to_i : nil )  
+	  puts 'Complete migration'
 	end
 	desc "drop database" 
 	task :drop do 

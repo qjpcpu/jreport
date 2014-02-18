@@ -1,7 +1,7 @@
-JreportRoot=File.expand_path('..',__FILE__)
+require 'bundler'
+Bundler.require(:default)
 
-require 'active_record'
-require 'sqlite3'
+JreportRoot=File.expand_path('..',__FILE__)
 
 # Load db models
 require JreportRoot+'/db/connection'

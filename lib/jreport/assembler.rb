@@ -16,7 +16,6 @@ module Jreport
     end
     def make_report
       controller="#{@report}Controller"
-      raise "Can't find #{controller}" unless Kernel.const_defined?(controller)
       ctrl_klas=Kernel.const_get(controller)
       mtds=ctrl_klas.instance_methods(false).grep /_report$/
       mtds.each do |m|
@@ -64,13 +63,9 @@ module Jreport
             body options['body']
             content_type options['content-type']
           end
-          if options['files']
-            options['files'].split(';').each do |f|
-              add_file f
-            end
-          end
         end
-        m.deliver
+        m.deliver!
+	puts 'Sent!'
       rescue=>e
         puts "Send mail faild!"
         puts e.backtrace
