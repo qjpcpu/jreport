@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["qjpcpu@gmail.com"]
   spec.summary       = %q{Jreport}
   spec.description   = %q{Create a report easily.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/qjpcpu/jreport"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -26,6 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'mail'
   spec.add_runtime_dependency 'inline-style'
   spec.add_runtime_dependency 'erubis'
-  spec.add_runtime_dependency 'sqlite3'
   spec.add_runtime_dependency 'activerecord'
 end
