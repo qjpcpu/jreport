@@ -31,9 +31,14 @@ module Jreport
           puts "Below is content body\n#{'-'*20}"
           puts html
           `echo "#{html}" > "#{ctrl.save_to}"` if ctrl.save_to
-          ops=ctrl.options.merge('body'=>html,'content-type'=>"text/html;charset=UTF-8")
+          ops=ctrl.options.merge!('body'=>html,'content-type'=>"text/html;charset=UTF-8")
           puts "Sending email for #{m}..."
-          send_mail ops
+	  if ctrl.respond_to? :send_mail
+	    ctrl.send :send_mail,ops
+	  else
+	    puts "Send with default mailer"
+            send_mail ops
+	  end
         rescue=>e
           puts e
           puts e.backtrace
@@ -63,6 +68,9 @@ module Jreport
             body options['body']
             content_type options['content-type']
           end
+ 	  if options['files']
+	    options.split(';').each{|f| add_file f }
+	  end	  
         end
         m.deliver!
 	puts 'Sent!'
