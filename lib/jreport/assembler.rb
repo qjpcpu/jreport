@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 require 'erubis'
 require 'inline-style'
 require 'mail'

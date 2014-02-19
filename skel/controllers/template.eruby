@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 class <%= controller.split('_').map{|x| x.capitalize }.join %>Controller
 	# The method looks like xxx_report would be used to generate report
     <% methods.each do |m| %>
