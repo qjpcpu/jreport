@@ -1,1 +1,29 @@
-<h1><%=report_name%>_report</h1>
+<p class="jtitle"><%=report_name%></p>
+<table>
+    <thead>    
+    	<tr>
+            <th>head1</th>
+            <th>head2</th>
+            <th>head3</th>
+        </tr>
+    </thead>
+    
+    <tfoot>
+    	<tr>
+        	<th>foot</th>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+    </tfoot>
+    
+    <tbody>
+       <!-- Add your data rows here -->
+	   <tr>
+	   		<th>name</th>
+			<td>1</th>
+			<td>2</th>
+	   </tr>
+        
+    </tbody>
+</table>
+<p>Created at:<%= Date.today.to_s %></p>

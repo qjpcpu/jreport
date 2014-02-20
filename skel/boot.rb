@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 require 'bundler'
 Bundler.require(:default)
+require 'date'
 
 JreportRoot=File.expand_path('..',__FILE__)
 

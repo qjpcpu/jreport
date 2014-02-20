@@ -51,12 +51,18 @@ module Jreport
     def render_html(dir,report_name,bindings)
       base="#{dir}/#{report_name}"
       html=Erubis::Eruby.new(File.read("#{base}.eruby")).result(bindings)
-  		if File.exist? "#{base}.css"
+      if Jreport::Style[:css]==:custom && File.exist?("#{base}.css")
   			css=File.read "#{base}.css"
   			html<<%Q{<style type="text/css" media="screen">#{css}</style>}
   			html=InlineStyle.process(html)
-  		end
-  		html
+      else
+		fcss=File.expand_path('../../../skel/views',__FILE__)+"/#{Jreport::Style[:css].to_s}.css"
+		css=File.read fcss
+		html<<%Q{<style type="text/css" media="screen">#{css}</style>}
+  		html=InlineStyle.process(html)
+		
+      end
+      html
     end
     
     def send_mail(options)
