@@ -29,15 +29,15 @@ module Jreport
           ctrl.send m
           dir="#{@root}/views/#{@_report}"
           html=render_html(dir,m.to_s,:data=>ctrl.data)
-          puts "Below is content body\n#{'-'*20}"
-          puts html
-          `echo "#{html}" > "#{ctrl.save_to}"` if ctrl.save_to
+	  if ctrl.save_to
+		File.open(ctrl.save_to,'w'){|fi| fi.write(html) }
+	  end
           ops=ctrl.options.merge!('body'=>html,'content-type'=>"text/html;charset=UTF-8")
-          puts "Sending email for #{m}..."
+          puts "Sending #{m}..."
 	  if ctrl.respond_to? :send_mail
 	    ctrl.send :send_mail,ops
 	  else
-	    puts "Send with default mailer"
+	    puts "Send with default mail client"
             send_mail ops
 	  end
         rescue=>e
@@ -74,7 +74,7 @@ module Jreport
 	  end	  
         end
         m.deliver!
-	puts 'Sent!'
+	puts 'Report sent!'
       rescue=>e
         puts "Send mail faild!"
         puts e.backtrace
