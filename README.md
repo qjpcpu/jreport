@@ -124,10 +124,27 @@ P.S. See all available rake command:
 
 	rake -T
 	
+### Mail configuration example(from [mail](https://github.com/mikel/mail))
+
+1. Change default delivery method
+
+	Change global delivery method it in `example/config/mail_config.rb`, or just change for this report:
+
+		mail.delivery_method :smtp,address: "localhost", port: 1025
+	
+2. Add attachment file
+
+		mail.add_file '/path/to/file'
+		# or
+		mail.add_file :filename=>'somefile.png',:content=>'/path/to/f.png'
+		
+3. Add cc
+
+		mail.cc="other@example.com"
 
 ### Others
 
-* Email detail configurations, please check [mail](https://github.com/mikel/mail).
+* More email detail configurations, please check [mail](https://github.com/mikel/mail).
 * View template details, please check [erubis](https://github.com/genki/erubis).
 
 ## Contributing
