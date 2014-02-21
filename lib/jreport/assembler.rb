@@ -25,7 +25,7 @@ module Jreport
           class << ctrl
             attr_accessor :data,:save_to
           end
-          ctrl.data,ctrl.options=fetch_data,{}
+          ctrl.data=fetch_data
           # initialize a mail object
           mail=Mail.new
           ctrl.send m,mail
