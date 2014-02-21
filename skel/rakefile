@@ -1,6 +1,4 @@
-require 'bundler'
-Bundler.require(:deafult)
-require './db/connection'
+require './boot'
 
 Dir.glob('tasks/*.rake').each { |r| import r }
 
