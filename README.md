@@ -65,26 +65,28 @@ Besides, if you use active-record to store the data you get, you can even return
 
 Below the controllers folder, jreport create weather_controller.rb, with the last two arguments of 'jreport generate scaffold' command, WeatherController has two methods: daily_report and weekly_report. In this method, you can filter the data as you like(with data and data= method). 
 
-But it's important to specify email configurations(from,to,subject). You can use options to cover this.
+But it's important to specify email configurations(from,to,subject). You can use the mail argument to cover this.
 
 And you can save final html string to 'save_to'.
 
 	class WeatherController
 	# The method looks like xxx_report would be used to generate report
-		def daily_report
-		# TODO: add code here
-	    self.data=self.data.first
-    	self.options['from']='from@example.com'
-    	self.options['to']='to@example.com'
-	    self.options['subject']='example daily report'
+		def daily_report(mail)
+			# TODO: add code here
+	    	self.data=self.data.first
+    		mail.from='from@example.com'
+    		mail.to='to@example.com'
+	    	mail.subject='example daily report'
+			mail.content_type="text/html;charset=UTF-8"
 		end
-		def weekly_report
-		# TODO: add code here
-	    self.options['from']='from@example.com'
-	    self.options['to']='to@example.com'
-	    self.options['subject']='example weekly report'
+		def weekly_report(mail)
+			# TODO: add code here
+	    	mail.from='from@example.com'
+	    	mail.to='to@example.com;to1@example.com'
+	    	mail.subject='example weekly report'
+			mail.content_type="text/html;charset=UTF-8"
     
-    	self.save_to='/home/jreport/example_w.html'
+    		self.save_to='/home/jreport/example_w.html'
 		end
 	end
 

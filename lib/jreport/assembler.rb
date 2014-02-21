@@ -23,23 +23,21 @@ module Jreport
         begin
           ctrl=ctrl_klas.new
           class << ctrl
-            attr_accessor :data,:options,:save_to
+            attr_accessor :data,:save_to
           end
           ctrl.data,ctrl.options=fetch_data,{}
-          ctrl.send m
+          # initialize a mail object
+          mail=Mail.new
+          ctrl.send m,mail
           dir="#{@root}/views/#{@_report}"
           html=render_html(dir,m.to_s,:data=>ctrl.data)
-	  if ctrl.save_to
-		File.open(ctrl.save_to,'w'){|fi| fi.write(html) }
-	  end
-          ops=ctrl.options.merge!('body'=>html,'content-type'=>"text/html;charset=UTF-8")
-          puts "Sending #{m}..."
-	  if ctrl.respond_to? :send_mail
-	    ctrl.send :send_mail,ops
-	  else
-	    puts "Send with default mail client"
-            send_mail ops
-	  end
+		      File.open(ctrl.save_to,'w'){|fi| fi.write(html) } if ctrl.save_to
+          # send out report
+          mail.body=html
+          if mail.to
+            mail.deliver!
+            puts "Mail sent!"
+          end
         rescue=>e
           puts e
           puts e.backtrace
@@ -57,28 +55,6 @@ module Jreport
   		html=InlineStyle.process(html)
       end
       html
-    end
-    
-    def send_mail(options)
-      begin
-        m=Mail.new do
-          from    options['from']
-          to      options['to']
-          subject options['subject']
-          html_part do
-            body options['body']
-            content_type options['content-type']
-          end
- 	  if options['files']
-	    options.split(';').each{|f| add_file f }
-	  end	  
-        end
-        m.deliver!
-	puts 'Report sent!'
-      rescue=>e
-        puts "Send mail faild!"
-        puts e.backtrace
-      end
     end
     
   end
