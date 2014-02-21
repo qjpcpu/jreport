@@ -2,6 +2,7 @@
 require 'bundler'
 Bundler.require(:default)
 require 'date'
+require 'active_record'
 
 JreportRoot=File.expand_path('..',__FILE__)
 
