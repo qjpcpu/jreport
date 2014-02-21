@@ -39,15 +39,22 @@ module JreportCommand
       `echo "#{code}" > "#{file}"`
     end
     
+    option :css
     desc 'view','generate view'
     def view(name,*views)
+      dir=File.expand_path('../../skel/views',__FILE__)
+      if options[:css]
+	default_css=dir+'/'+options[:css].to_s+'.css'
+      else
+	default_css=dir+'/highlight.css'
+      end
       `mkdir "./views/#{name}"` unless File.exists?("./views/#{name}")
       views<<'example' if views.empty?
       views.map{|x| x+'_report'}.each do |fname|
         dir=File.expand_path('../../skel/views',__FILE__)
         content=Erubis::Eruby.new(File.read("#{dir}/template.eruby")).result(:report_name=>name)
         `echo "#{content}" > "./views/#{name}/#{fname}.eruby"`
-        `touch "./views/#{name}/#{fname}.css"`
+        `cp "#{default_css}"  "./views/#{name}/#{fname}.css"`
       end
     end
     

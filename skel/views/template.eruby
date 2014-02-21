@@ -1,4 +1,4 @@
-<p class="jtitle"><%=report_name%></p>
+<h1 class="jtitle"><%=report_name%></h1>
 <table>
     <thead>    
     	<tr>
