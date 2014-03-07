@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 require 'erubis'
-require 'inline-style'
+require 'premailer'
 require 'mail'
 
 module Jreport
@@ -51,8 +51,8 @@ module Jreport
       html=Erubis::Eruby.new(File.read("#{base}.eruby")).result(bindings)
       if File.exist?("#{base}.css")
   		css=File.read "#{base}.css"
-  		html<<%Q{<style type="text/css" media="screen">#{css}</style>}
-  		html=InlineStyle.process(html)
+		p=Premailer.new(html,:with_html_string=>true,:css_string=>css)
+  		html=p.to_inline_css
       end
       html
     end

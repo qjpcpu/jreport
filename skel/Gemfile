@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'thor'
 gem 'mail'
-gem 'inline-style'
+gem 'premailer'
 gem 'erubis'
 gem 'sqlite3'
 #gem 'activerecord-jdbcsqlite3-adapter'
