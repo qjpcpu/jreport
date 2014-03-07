@@ -34,10 +34,7 @@ module Jreport
 		      File.open(ctrl.save_to,'w'){|fi| fi.write(html) } if ctrl.save_to
           # send out report
           mail.body=html
-          if mail.to
-            mail.deliver!
-            puts "Mail sent!"
-          end
+	  send_mail(mail)
         rescue=>e
           puts e
           puts e.backtrace
@@ -56,6 +53,14 @@ module Jreport
       end
       html
     end
-    
+    def send_mail(mail)
+	lost=mail.from.nil? ? 'from' : mail.to.nil? ? 'to' : mail.subject.nil? ? 'subject' : nil
+	if  lost
+		puts "Mail '#{lost}' empty, mail wouldn't be sent!"
+		return
+	end
+	mail.deliver!
+	puts "Mail sent!"
+    end    
   end
 end
