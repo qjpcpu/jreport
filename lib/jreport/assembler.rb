@@ -33,7 +33,11 @@ module Jreport
           html=render_html(dir,m.to_s,:data=>ctrl.data)
 		      File.open(ctrl.save_to,'w'){|fi| fi.write(html) } if ctrl.save_to
           # send out report
-          mail.body=html
+          if mail.html_part
+              mail.html_part.body=html
+          else
+              mail.body=html
+          end
 	  send_mail(mail)
         rescue=>e
           puts e
