@@ -102,6 +102,20 @@ This is a simple weekly report template:
 	<%= data %>
 
 Note: in the template you can use helper method that is defined in helpers folder. You can access the active record classes, too.
+
+For example. If you have a file `number_helper.rb` in helper folder:
+
+	module NumberHelper
+	    def pretty_number(num)
+	        num,result=num.to_s,''
+	        num.reverse.split('').each_with_index{|v,i| result<<v;result<<',' if (i+1)%3==0}
+	        result=result[0..-2] if result[-1]==','
+	        result.reverse
+	    end
+	end
+	
+Then you can use the helper method `pretty_number` directory in views as: `<%= pretty_number 1234345 %>`
+
 ### Gnerate report
 
 	jreport make weather
@@ -123,6 +137,11 @@ You can migrate db changes:
 P.S. See all available rake command:
 
 	rake -T
+	
+Besides, you can access database directly in `irb`:
+
+	require './boot.rb'
+
 	
 ### Mail configuration example(from [mail](https://github.com/mikel/mail))
 
