@@ -30,7 +30,7 @@ module Jreport
           mail=Mail.new
           ctrl.send m,mail
           dir="#{@root}/views/#{@_report}"
-          html=render_html(dir,m.to_s,:data=>ctrl.data)
+          html=render_html(dir,m.to_s,:data=>ctrl.data,:attachments=>mail.attachments)
 		      File.open(ctrl.save_to,'w'){|fi| fi.write(html) } if ctrl.save_to
           # send out report
           if mail.html_part

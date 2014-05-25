@@ -157,6 +157,15 @@ Besides, you can access database directly in `irb`:
 		# or
 		mail.add_file :filename=>'somefile.png',:content=>'/path/to/f.png'
 		
+    If you add a picture, and want to make it an embbeded picture,you can:
+
+        # First add it as attachemnt in controller
+        mail.add_file '/path/to/picture_name'
+        # Then in view
+        <img src="<%=attachments['picture_name'].url>"/>
+        # or if this is the only attachemnt
+        <img src="<%=attachments.first.url>"/>
+
 3. Add cc
 
 		mail.cc="other@example.com"
