@@ -14,12 +14,12 @@ module JreportCommand
       code=Erubis::Eruby.new(File.read("#{dir}/db/migrate/template.eruby")).result(:table=>table,:fields=>fields)
       num="%03d" % ((Dir['./db/migrate/*.rb'].map{|f| File.basename(f)[0..2].to_i } << -1).max+1)
       mig_name="#{num}_create_#{table.downcase.pluralize}.rb"
-      `echo "#{code}" > ./db/migrate/"#{mig_name}" `
+      File.open("./db/migrate/#{mig_name}",'w'){|f| f.write code}
       
       refs=fields.select{|f| f.split(':')[1]=='references'}.map{|f| f.split(':')[0].downcase }
       code=Erubis::Eruby.new(File.read("#{dir}/models/template.eruby")).result(:table=>table,:refs=>refs)
       mod_name=table.downcase.singularize+'.rb'
-      `echo "#{code}" > ./models/#{mod_name}`
+      File.open("./models/#{mod_name}",'w'){|f| f.write code}
     end
     
     desc 'collector','generate collector'
@@ -27,7 +27,7 @@ module JreportCommand
       dir=File.expand_path('../../skel/collectors',__FILE__)
       code=Erubis::Eruby.new(File.read("#{dir}/template.eruby")).result(:collector=>name)
       file="./collectors/#{name}_collector.rb"
-      `echo "#{code}" > "#{file}"`
+      File.open(file,'w'){|f| f.write code}
     end
     
     desc 'controller','generate controller'
@@ -36,7 +36,7 @@ module JreportCommand
       dir=File.expand_path('../../skel/controllers',__FILE__)
       code=Erubis::Eruby.new(File.read("#{dir}/template.eruby")).result(:controller=>name,:methods=>methods)
       file="./controllers/#{name}_controller.rb"
-      `echo "#{code}" > "#{file}"`
+      File.open(file,'w'){|f| f.write code}
     end
     
     option :css
@@ -53,7 +53,7 @@ module JreportCommand
       views.map{|x| x+'_report'}.each do |fname|
         dir=File.expand_path('../../skel/views',__FILE__)
         content=Erubis::Eruby.new(File.read("#{dir}/template.eruby")).result(:report_name=>name)
-        `echo "#{content}" > "./views/#{name}/#{fname}.eruby"`
+        File.open("./views/#{name}/#{fname}.eruby",'w'){|f| f.write content}
         `cp "#{default_css}"  "./views/#{name}/#{fname}.css"`
       end
     end
