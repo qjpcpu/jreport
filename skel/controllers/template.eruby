@@ -4,6 +4,16 @@ class <%= controller.split('_').map{|x| x.capitalize }.join %>Controller
     <% methods.each do |m| %>
 	def <%=m%>_report(mail)
 		# TODO: add code here
+       # mail.from='jason@example.com'
+       # mail.to='someone@example2.com'
+       # mail.subject="this is subject"
+       # mail.html_part=Mail::Part.new do
+       #     content_type 'text/html;charset=UTF-8'
+       # end
+       # #add attachements
+       # mail.add_file '/path/to/attachment-file'
+       # #save html file
+       # self.save_to='/path/to/example.html'
 	end
 	<% end %>
 end

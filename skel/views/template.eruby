@@ -26,4 +26,6 @@
         
     </tbody>
 </table>
+<!-- Insert image file from attachments -->
+<img src="<%=attachments.first.url%>"/>
 <p>Created at:<%= Date.today.to_s %></p>
